@@ -54,7 +54,7 @@
                 <!-- include all single posts here -->
                 <%- include('partials/featured-post.ejs') %>
                 <!-- include aside here -->
-                <%- include('partials/featured-aside.ejs') %>
+                <%- include('partials/widget-latestnews.ejs') %>
             </div>
         </div>
     </div>
@@ -64,10 +64,14 @@
     <div class="popular-news-area section-padding-80-50">
         <div class="container">
             <div class="row">
-               <!-- include popularnews-post.ejs -->
-               <%- include('partials/popularnews-post.ejs') %>
-                <!-- include popularnews-aside.ejs -->
-               <%- include('partials/popularnews-aside.ejs') %>
+                <!-- include popularnews-post.ejs -->
+                <%- include('partials/popularnews-post.ejs') %>
+                <!-- include asides -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <%- include('partials/widget-popularnews.ejs') %>
+                    <%- include('partials/widget-newsletter.ejs') %>
+                </div>
+
             </div>
         </div>
     </div>
@@ -322,23 +326,13 @@
 
     <!-- ##### Footer Add Area Start ##### -->
     <div class="footer-add-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="footer-add">
-                        <a href="#"><img src="img/bg-img/footer-add.gif" alt=""></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <%- include('partials/footeradd.ejs') %>
     </div>
     <!-- ##### Footer Add Area End ##### -->
-
+    
     <!-- ##### Footer Area Start ##### -->
     <footer class="footer-area">
         <%- include('partials/footer.ejs') %>
-
-       
     </footer>
     <!-- ##### Footer Area Start ##### -->
 
