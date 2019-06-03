@@ -1,6 +1,8 @@
 module.exports = (app) => {
 
-   let data = { 
+   let data = {
+      // NB JEG BRUGER SAMME DATGA TIL BÅDE HOME OG CATEGORIES, MEN DER ER FLERE
+      // ARTIKLER I CATEGORIES END I HOME. MEN NU ER DETTE BARE ET EKSEMPEL.
       "news" : [
             {
                "category" : "Finance",
