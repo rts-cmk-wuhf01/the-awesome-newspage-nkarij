@@ -15,9 +15,6 @@
     <!-- Favicon -->
     <link rel="icon" href="img/core-img/favicon.ico">
 
-    <!-- Core Stylesheet -->
-    <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -47,6 +44,14 @@
     </div>
     <!-- ##### Hero Area End ##### -->
 
+    <% allProducts.forEach(product => { %>
+
+        <div> <%= product.name %> </div>
+        <div> <%= product.price %> </div>
+    
+    <% }); %>
+    
+
     <!-- ######################## UNIQUE CONTENT STARTS ######################## -->
 
     <!-- ##### Featured Post Area Start ##### -->
@@ -54,7 +59,7 @@
         <div class="container">
             <div class="row">
                 <!-- include all single posts here -->
-                <%- include('partials/featured-post.ejs') %>
+                <%- include('partials/featured-post.ejs') %>            
                 <!-- include aside here -->
                 <%- include('partials/subpartials/widget-latestnews.ejs') %>
             </div>
@@ -68,6 +73,14 @@
             <div class="row">
                 <!-- include popularnews-post.ejs -->
                 <%- include('partials/popularnews-post.ejs') %>
+
+                <!-- SKAL DE STÅ HER? DET TROR JEG, DEN STOD I HOME UNDER INCLUDE POPULAR NEWS POST -->
+                <!-- WIDGET ASIDE -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <%- include('partials/widget-popularnews.ejs') %>
+                    <%- include('partials/subpartials/widget-newsletter.ejs') %>
+                </div>
+    
             </div>
         </div>
     </div>

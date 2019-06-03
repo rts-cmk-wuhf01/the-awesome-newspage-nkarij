@@ -24,11 +24,11 @@
                 <!-- Nav Start -->
                 <div class="classynav">
                     <ul>
-                        <li class="active"><a href="/">Home</a></li>
+                        <li class="<%= typeof page != 'undefined' && page == 'Home' ? 'active' : '' %>"><a href="/">Home</a></li>
                         <li><a href="#">Pages</a>
                             <ul class="dropdown">
-                                <li><a href="/">Home</a></li>
-                                <li><a href="/categories-post">Catagories</a></li>
+                                <li class="<%= typeof page != 'undefined' && page == 'Home' ? 'active' : '' %>"><a href="/">Home</a></li>
+                                <li class="<%= typeof page != 'undefined' && page == 'Categories-post' ? 'active' : '' %>"><a href="/categories-post">Catagories</a></li>
                                 <li><a href="/single-post">Single Articles</a></li>
                                 <li><a href="/about">About Us</a></li>
                                 <li><a href="/contact">Contact</a></li>

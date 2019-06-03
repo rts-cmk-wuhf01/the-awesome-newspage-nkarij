@@ -447,6 +447,8 @@ textarea:focus {
       .header-area .newspaper-main-menu .classy-navbar .classynav > ul > li.active > a {
         position: relative;
         z-index: 1;
+        /* ændret */
+        background-color: blue;
         color: #1c1c1c; }
         .header-area .newspaper-main-menu .classy-navbar .classynav > ul > li.active > a::before {
           background-color: #f7f7f7;
@@ -473,6 +475,16 @@ textarea:focus {
     @media only screen and (max-width: 767px) {
       .header-area .is-sticky #stickyMenu {
         background-color: #152535; } }
+
+/* NANNAS CLASSES HEADER */
+
+ul > li.active {
+  background-color: red !important;
+}
+
+/* .newactive {
+    background-color: rgb(247, 181, 181);
+} */
 
 /* :: 5.0 Hero Area */
 .hero-area {

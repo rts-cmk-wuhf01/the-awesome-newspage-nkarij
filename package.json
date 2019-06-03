@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/rts-cmk/the-awesome-newspage#readme",
   "dependencies": {
+    "date-and-time": "^0.6.3",
     "ejs": "^2.6.1",
     "express": "^4.17.0",
     "morgan": "^1.9.1",

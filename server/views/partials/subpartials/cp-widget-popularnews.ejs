@@ -1,0 +1,15 @@
+<% if(data != 'undefined') { %>
+    <% data.popularnews.forEach(item => { %>
+
+    <!-- Single Popular Blog -->
+    <div class="single-popular-post">
+        <a href="#">
+            <h6><span><%- item.rank %></span> <%- item.title %></h6>
+        </a>
+        <p><%= dateAndTime.format(item.datetime, 'h:mm A | MMMM DD') %></p>
+    </div>
+
+    <% })  %>
+<% } %> 
+
+   

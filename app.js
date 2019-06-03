@@ -21,8 +21,6 @@ app.set('view engine', 'ejs');
 // peg på den mappe hvor alle views filerne er placeret
 app.set('views', './server/views');
 
-
-
 /* indlæs alle de routes serveren skal håndtere
  * dette sker igennem en ny fil, for at splitte koden op i smartere blokke */
 require('./server/routes/routes.js')(app);
@@ -31,6 +29,18 @@ require('./server/routes/routes.js')(app);
  * og billeder direkte fra public mappen, efter alle routes er kørt */
 app.use(express.static('public'));
 
+
+/* BRUG DATE-AND-TIME MODULE, den engelske version skal laves om til en dansk */
+app.locals.dateAndTime = require('date-and-time');
+app.locals.dateAndTime.locale('en');
+app.locals.dateAndTime.setLocales('en', {
+   'A': ['AM', 'PM'],
+   'dddd': ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'],
+   'ddd': ['søn', 'man', 'tirs', 'ons', 'tors', 'fre', 'lør'],
+   'dd': ['sø', 'ma', 'ti', 'on', 'to', 'fr', 'lø'],
+   'MMM': ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
+   'MMMM': ['januar', ' februar', 'marts', 'april', 'maj', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'december']
+});
 
 
 // start serveren på port 3001
