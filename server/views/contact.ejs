@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title -->
+    <!-- <title>The News Paper - News & Lifestyle Magazine Template</title> -->
+    <%- include('partials/head.ejs') %>
+
+    <!-- Favicon -->
+    <link rel="icon" href="img/core-img/favicon.ico">
+
+</head>
+
+<body>
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area">
+
+        <!-- Top Header Area -->
+        <div class="top-header-area">
+            <!-- include topheader.ejs -->
+            <%- include('partials/topheader.ejs') %>
+        </div>
+
+        <!-- Navbar Area -->
+        <div class="newspaper-main-menu" id="stickyMenu">
+            <div class="classy-nav-container breakpoint-off">
+                <!-- nav bar stuff include -->
+                <%- include('partials/nav.ejs') %>
+            </div>
+        </div>
+    </header>
+    <!-- ##### Header Area End ##### -->
+
+    <!-- ##### Hero Area Start ##### -->
+    <div class="hero-area">
+        <!-- include hero.ejs -->
+        <%- include('partials/hero.ejs') %>
+    </div>
+    <!-- ##### Hero Area End ##### -->
+   
+
+    <!-- ######################## UNIQUE CONTENT STARTS ######################## -->
+
+    <!-- ##### Contact Form Area Start ##### -->
+    <div class="contact-area section-padding-0-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="contact-title">
+                        <h2>Contact us</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <div class="contact-form-area">
+                        <form action="#" method="post">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <input type="text" class="form-control" id="name" placeholder="Name">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <input type="email" class="form-control" id="email" placeholder="E-mail">
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="subject" placeholder="Subject">
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="message" class="form-control" id="message" cols="30" rows="10" placeholder="Message"></textarea>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <button class="btn newspaper-btn mt-30 w-100" type="submit">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <!-- Single Contact Information -->
+                    <div class="single-contact-information mb-30">
+                        <h6>Address:</h6>
+                        <p>481 Creekside Lane Avila <br>Beach, CA 93424</p>
+                    </div>
+                    <!-- Single Contact Information -->
+                    <div class="single-contact-information mb-30">
+                        <h6>Phone:</h6>
+                        <p>+53 345 7953 32453 <br>+53 345 7557 822112</p>
+                    </div>
+                    <!-- Single Contact Information -->
+                    <div class="single-contact-information mb-30">
+                        <h6>Email:</h6>
+                        <p>yourmail@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Maps -->
+            <div class="map-area">
+                <div id="googleMap"></div>
+            </div>
+
+        </div>
+    </div>
+    <!-- ##### Contact Form Area End ##### -->
+
+    <!-- ######################## UNIQUE CONTENT ENDS ######################## -->
+
+    <!-- ##### Footer Add Area Start ##### -->
+    <div class="footer-add-area">
+        <%- include('partials/footeradd.ejs') %>
+    </div>
+    <!-- ##### Footer Add Area End ##### -->
+    
+    <!-- ##### Footer Area Start ##### -->
+    <footer class="footer-area">
+        <%- include('partials/footer.ejs') %>
+    </footer>
+    <!-- ##### Footer Area Start ##### -->
+
+    <!-- ##### All Javascript Files ##### -->
+    <!-- include partials/scripts.ejs -->
+    <%- include('partials/scripts.ejs') %>
+</body>
+
+</html>
