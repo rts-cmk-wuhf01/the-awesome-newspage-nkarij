@@ -1,4 +1,40 @@
+const mysql = require('../config/mysql');
+
 module.exports = (app) => {
+
+   // DET KAN VÆRE EN GOD IDE AT TESTE SIN DATABASE I EN DATABASE TEST
+   // VED AT SENDE VÆRDIERNE TIL BROWSEREN MED EN RES.SEND()
+   app.get('/database', async (req, res, next) => {
+
+      // CONNECT TIL DATABASE:
+      let database = await mysql.connect();
+      // HENTER RÆKKER/RECORDS I PRODUCTS, RECORDS LIGGER ALTID I INDEX 0, [PRODUCTS],
+      // NOGLE GANGE HENTER MAN OGSÅ METADATA I INDEX 1 (FIELDS) [PRODUCTS, FIELDS]
+      // NB DISSE NAVNE ER KUN KONVENTIONER.
+      let [products] = await database.execute('SELECT * FROM PRODUCTS');
+      database.end();
+
+      // TEST VIA REQUEST /DATABASE I BROWSER
+      res.send(products);
+   });
+
+   // EKSEMPEL PÅ EN REQUEST TIL DATABASE-INDHOLD
+   app.get('/products', async (req, res, next) => {
+      
+      let database = await mysql.connect();
+
+      // NB BEMÆRK BACKTICKS FOR LINJESKIFT, sådan får man fat i de relaterede tabeller:
+      let [productsandcategories] = await database.execute(`
+         SELECT * FROM products
+         INNER JOIN categories ON fk_categoryID = categoryID
+      `);
+      database.end();
+
+      // PÅ REQUEST /PRODUCTS HENT FRA DATABASEN:
+      res.render('products', {
+         "productsandcategories" : productsandcategories,
+      });
+   });
 
    let data = {
       // NB SÆT FLERE DATASÆT IND I NEWS
@@ -108,25 +144,10 @@ module.exports = (app) => {
 } // data ended
 
    app.get('/', (req, res, next) => {
-      
-      let products = [
-         {
-            name : "Produkt 1",
-            price : 100,
-            image : "/img/IMG/food/cranberries-small.jpeg"
-         },    
-         {
-            name : "Produkt 2",
-            price : 200,
-            image : "/img/IMG/food/abrikoser-small.jpeg"
-         }
-      ]
-      
       res.render('home', {
-         "allProducts" : products,
          "title" : "The News Paper - News & Lifestyle Magazine Template",
          "page" : "Home",
-         "data" : data
+         "data" : data,
       });
    });
 

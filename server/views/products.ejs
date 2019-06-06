@@ -1,0 +1,11 @@
+
+<h3> PRODUKTER </h3>
+
+<% if(productsandcategories != 'undefined') { %>
+    <% productsandcategories.forEach(productandcategory => { %>
+        <h4 class="product-title"> <%= productandcategory.productTitle %> </h4>
+        <p class="product-price"> <%= productandcategory.productPrice %> </p>
+        <p class="product-description"> <%= productandcategory.productDescription %> </p>
+        <p class="product-category"> <%= productandcategory.categoryTitle %> </p>
+    <% }) %>
+<% } %>
