@@ -8,7 +8,7 @@ module.exports = {
          // min server har ikke et password
          password: '',
          port: '3306',
-         database: 'testdatabase'
+         database: 'newspagedatabase'
       })
    }
 }

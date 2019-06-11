@@ -1,9 +1,9 @@
-<% if(data != 'undefined') { %>
+<% if(typeof data != 'undefined') { %>
     <% data.latestcomments.forEach(comment => { %>
             <!-- Single Comments -->
             <div class="single-comments d-flex">
                 <div class="comments-thumbnail mr-15">
-                    <img src="img/bg-img/29.jpg" alt="">
+                    <img src="/img/bg-img/29.jpg" alt="">
                 </div>
                 <div class="comments-text">
                     <a href="#"> <%- comment.name %> <span>on</span> <%- comment.title %> </a>
