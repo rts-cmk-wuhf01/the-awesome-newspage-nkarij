@@ -1,20 +1,20 @@
 
 <!-- Single Featured Post, skal loope 2 gange -->
-
-<% if(typeof data != 'undefined') { %>
-    <% data.featured2.forEach(item => { %>
+<!-- DE SMÅ FEATURED ARTIKLER SAMMEN MED FRONTPAGE -->
+<% if(typeof featurednews != 'undefined') { %>
+    <% featurednews.forEach(newspost => { %>
 <div class="single-blog-post featured-post-2">
     <div class="post-thumb">
-        <a href="#"><img src="/img/bg-img/17.jpg" alt=""></a>
+        <a href="/single-post/<%= newspost.newsID%>"><img src="/img/bg-img/<%= newspost.newsImage%>" alt=""></a>
     </div>
     <div class="post-data">
-        <a href="#" class="post-catagory"> FEATURED2 <%= item.category %> </a>
+        <a href="/categories-post/<%= newspost.newsCategoryID%>" class="post-catagory"> <%= newspost.newsCategoryTitle %> </a>
         <div class="post-meta">
-            <a href="#" class="post-title">
-                <h6> <%= item.text %> </h6>
+            <a href="/single-post/<%= newspost.newsID%>" class="post-title">
+                <h6> <%= newspost.newsText %> </h6>
             </a>
             <!-- Post Like & Post Comment -->
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-newsposts-center">
                 <a href="#" class="post-like"><img src="/img/core-img/like.png" alt="">
                     <span>392</span></a>
                 <a href="#" class="post-comment"><img src="/img/core-img/chat.png" alt="">

@@ -1,12 +1,12 @@
-<% if(typeof data != 'undefined') { %>
-    <% data.popularnews.forEach(item => { %>
-
+<% if(typeof mostpopular != 'undefined') { %>
+    <!--  -->
+    <% mostpopular.forEach((newspost, index) => { %>
     <!-- Single Popular Blog -->
     <div class="single-popular-post">
-        <a href="#">
-            <h6><span><%- item.rank %></span> <%- item.title %></h6>
+        <a href="/single-post/<%= newspost.newsID%>">
+            <h6><span><%= index+1 %></span> <%- newspost.newsTitle %></h6>
         </a>
-        <p><%= dateAndTime.format(item.datetime, 'dddd, D MMMM, YY') %></p>
+        <p> <%= dateAndTime.format(newspost.newsPostDate, 'dddd, D MMMM, YY') %></p>
     </div>
 
     <% })  %>

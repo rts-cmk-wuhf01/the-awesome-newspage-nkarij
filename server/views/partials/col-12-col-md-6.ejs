@@ -1,24 +1,28 @@
-<!-- gange 4 -->
-<% if(typeof data != 'undefined') { %>
-<% data.relatednews.forEach(item => { %>
-<!-- Single Post -->
-<div class="col-12 col-md-6">
-    <div class="single-blog-post style-3">
-        <div class="post-thumb">
-            <a href="#"><img src="/img/bg-img/12.jpg" alt=""></a>
-        </div>
-        <div class="post-data">
-            <a href="#" class="post-catagory"> <%- item.category%> </a>
-            <a href="#" class="post-title">
-                <h6> <%- item.text %> </h6>
-            </a>
-            <div class="post-meta d-flex align-items-center">
-                <a href="#" class="post-like"><img src="/img/core-img/like.png" alt=""> <span>392</span></a>
-                <a href="#" class="post-comment"><img src="/img/core-img/chat.png" alt=""> <span>10</span></a>
+<!-- editors popularnewspick gange 4 -->
+<% if(typeof popularnewspick != 'undefined') { %>
+<% popularnewspick.forEach((newspost, index) => { %>
+    <% if(index >= 4 ) {
+        return;
+    } else { %>
+        <!-- Single Post -->
+        <div class="col-12 col-md-6">
+            <div class="single-blog-post style-3">
+                <div class="post-thumb">
+                    <a href="/single-post/<%= newspost.newsID%>"><img src="/img/bg-img/<%= newspost.newsImage %>" alt=""></a>
+                </div>
+                <div class="post-data">
+                    <a href="/categories-post/<%= newspost.newsCategoryID%>" class="post-catagory"> <%- newspost.newsCategoryTitle %> </a>
+                    <a href="/single-post/<%= newspost.newsID%>" class="post-title">
+                        <h6> <%- newspost.newsText %> </h6>
+                    </a>
+
+                    <div class="post-meta d-flex align-newsposts-center">
+                        <a href="#" class="post-like"><img src="/img/core-img/like.png" alt=""> <span> <%= newspost.newsLikes %> </span></a>
+                        <a href="#" class="post-comment"><img src="/img/core-img/chat.png" alt=""> <span>10</span></a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-<% })  %>
+        <% } %> 
+    <% })  %>
 <% } %> 
