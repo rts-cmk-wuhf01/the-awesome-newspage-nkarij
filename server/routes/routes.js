@@ -55,7 +55,7 @@ module.exports = (app) => {
          ORDER BY newsPostDate DESC`
       );
 
-         let [popularnews] = await database.execute(`
+      let [popularnews] = await database.execute(`
          SELECT
          *
          FROM news
@@ -143,6 +143,16 @@ module.exports = (app) => {
          WHERE fk_newsCategoryID = ?`, [req.params.categoryID]
       );
 
+      let [popularnews] = await database.execute(`
+         SELECT
+         *
+         FROM news
+         INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
+         INNER JOIN author ON fk_authorID = authorID
+         ORDER BY newsLikes DESC
+         LIMIT 4`
+      );
+
       // NB BEMÆRK BACKTICKS FOR LINJESKIFT, sådan får man fat i de relaterede tabeller:
       let [selectednews] = await database.execute(`
          SELECT * FROM news
@@ -153,28 +163,19 @@ module.exports = (app) => {
       // nb sql vælger kun de news-artikler som tilhører en kategori..
       // men burde ? ikke være categoryID. skal jeg overhovedet bruge denne?
       
+      
       // WIDGETS
       let [latestpostswidget] = await database.execute(`
-      SELECT
-      *
-      FROM newscategories
-      INNER JOIN news ON fk_newscategoryID = newsCategoryID
-      INNER JOIN author ON fk_authorID = authorID
-      WHERE newsID = (SELECT newsID FROM news 
-                     WHERE fk_newscategoryID = newsCategoryID
-                     ORDER BY newsPostDate DESC
-                     LIMIT 1)
-      ORDER BY newsPostDate DESC`
-      );
-
-      let [popularnews] = await database.execute(`
-      SELECT
-      *
-      FROM news
-      INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
-      INNER JOIN author ON fk_authorID = authorID
-      ORDER BY newsLikes DESC
-      LIMIT 4`
+         SELECT
+         *
+         FROM newscategories
+         INNER JOIN news ON fk_newscategoryID = newsCategoryID
+         INNER JOIN author ON fk_authorID = authorID
+         WHERE newsID = (SELECT newsID FROM news 
+                        WHERE fk_newscategoryID = newsCategoryID
+                        ORDER BY newsPostDate DESC
+                        LIMIT 1)
+         ORDER BY newsPostDate DESC`
       );
 
 
@@ -185,9 +186,12 @@ module.exports = (app) => {
          "page" : "Categories-post",
          "selectednews" : selectednews,
          "categories" : categories,
-         // mangler at sætte mine widgets-keywords ind
-         // ER NÅET HERTIL
-         "news" : news
+         // nb newspicks er begrænset til 4 i templaten.
+         "popularnewspick" : popularnews,
+         // widgets:
+         "latestposts" : latestpostswidget,
+         "mostpopular" : popularnews,
+         "news" : news,
       });
    });
 
@@ -216,7 +220,7 @@ module.exports = (app) => {
          ORDER BY newsPostDate DESC`
       );
 
-         let [popularnews] = await database.execute(`
+      let [popularnews] = await database.execute(`
          SELECT
          *
          FROM news
@@ -248,13 +252,56 @@ module.exports = (app) => {
          WHERE newsID = ?
       `, [req.params.singleID] 
       );
-      console.log(selectednewspost[0].newsImage)
+
+
+      // udskriver den nyeste artikel fra hver kategori.
+      let [editorspicks] = await database.execute(`
+         SELECT
+         *
+         FROM newscategories
+         INNER JOIN news ON fk_newscategoryID = newsCategoryID
+         WHERE newsID = ( SELECT newsID FROM news WHERE fk_newscategoryID = newsCategoryID ORDER BY newsPostDate DESC LIMIT 1)` 
+         // NOTE til subselect I SQL-noterne på desktop-skrivebordet
+      );
+
+      
+      // widgets:
+      let [popularnews] = await database.execute(`
+         SELECT
+         *
+         FROM news
+         INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
+         INNER JOIN author ON fk_authorID = authorID
+         ORDER BY newsLikes DESC
+         LIMIT 4`
+      );
+
+      // WIDGETS
+      let [latestpostswidget] = await database.execute(`
+         SELECT
+         *
+         FROM newscategories
+         INNER JOIN news ON fk_newscategoryID = newsCategoryID
+         INNER JOIN author ON fk_authorID = authorID
+         WHERE newsID = (SELECT newsID FROM news 
+                        WHERE fk_newscategoryID = newsCategoryID
+                        ORDER BY newsPostDate DESC
+                        LIMIT 1)
+         ORDER BY newsPostDate DESC`
+      );
+
+
       database.end();
 
       res.render('single-post', {
          "title" : "The News Paper - News & Lifestyle Magazine Template",
          "page" : "Single-post",
          "selectedpost" : selectednewspost[0],
+         "editorspicks" : editorspicks,
+         "popularnewspick" : popularnews,
+         // widgets:
+         "latestposts" : latestpostswidget,
+         "mostpopular" : popularnews,
       });
    });
 
