@@ -1,0 +1,41 @@
+<!-- Single Comment Area -->
+<!-- bruger oplysninger fra både comments og users -->
+
+<% if(typeof comments != 'undefined') { %>
+   <% if(comments.length > 0) { %>
+    <% comments.forEach(comment => { %>
+
+    <li class="single_comment_area">
+        <!-- Comment Content -->
+        <div class="comment-content d-flex">
+            <!-- Comment Author -->
+            <div class="comment-author">
+                <img src="/img/bg-img/<%= comment.userImage %>" alt="author">
+            </div>
+            <!-- Comment Meta -->
+            <div class="comment-meta">
+                <a href="" class="post-author"> <%= comment.userName %> </a>
+                <a href="#" class="post-date"> <%= comment.commentPostDate %> </a>
+                <p> <%= comment.commentText %> </p>
+            </div>
+        </div>
+    </li>
+
+        <% }); %>
+    <% } else { %>
+
+    <li class="single_comment_area">
+        <!-- Comment Content -->
+        <div class="comment-content d-flex">
+            <!-- Comment Author -->
+            <div class="comment-author">
+            </div>
+            <!-- Comment Meta -->
+            <div class="comment-meta">
+                <p> Der er ingen kommentarer </p>
+            </div>
+        </div>
+    </li>
+
+    <% }; %>
+<% }; %>

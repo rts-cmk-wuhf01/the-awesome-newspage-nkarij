@@ -247,12 +247,19 @@ module.exports = (app) => {
       // NB BEMÆRK BACKTICKS FOR LINJESKIFT, sådan får man fat i de relaterede tabeller:
       let [selectednewspost] = await database.execute(`
          SELECT * FROM news
-         INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
-         INNER JOIN author ON fk_authorID = authorID
+         LEFT OUTER JOIN newscategories ON fk_newscategoryID = newsCategoryID
+         LEFT OUTER JOIN author ON fk_authorID = authorID
          WHERE newsID = ?
       `, [req.params.singleID] 
       );
 
+      let [comments] = await database.execute(`
+         SELECT * FROM comments
+         INNER JOIN users ON fk_userID = userID
+         WHERE fk_newsID = ? 
+      `, [req.params.singleID])
+
+      console.log(comments)
 
       // udskriver den nyeste artikel fra hver kategori.
       let [editorspicks] = await database.execute(`
@@ -302,6 +309,7 @@ module.exports = (app) => {
          // widgets:
          "latestposts" : latestpostswidget,
          "mostpopular" : popularnews,
+         "comments" : comments
       });
    });
 
