@@ -152,6 +152,7 @@ module.exports = (app) => {
 
       // håndter valideringen, alle fejl pushes til et array så de er samlet ET sted
       let returnMessageArray = [];
+
       if(name == undefined || name == '') {
          returnMessageArray.push('Navn mangler');
       }
@@ -180,7 +181,41 @@ module.exports = (app) => {
 
       } else {
          // send det modtagede data tilbage, så vi kan se det er korrekt
-         res.send(req.body);
+         // res.send(req.body);
+         let database = await mysql.connect();
+         
+         // HER SKAL JEG LAVE EN TRY AND CATCH.... SE NYESTE VIDEO.
+         let result = await database.execute(`
+            INSERT INTO messages
+            SET
+            message_name = ?, 
+            message_email = ?, 
+            message_subject = ?, 
+            message_text = ?, 
+            message_date = ?`
+            , [name, email, subject, message, contactDate]
+         );
+
+         // affected rows er større end nul, hvis en (eller flere) række(r) blev indsat
+         if (result[0].affectedRows > 0) {
+            returnMessageArray.push('Tak for din besked, vi vender tilbage hurtigst muligt');
+
+         } else {
+            returnMessageArray.push('Din besked blev ikke modtaget.... ');
+         }
+
+         let categories = await getCategories(); 
+
+         database.end();
+
+         res.render('contact', {
+            'categories': categories,
+            // dette er ikke den helt korrekte løsning (push'en!)
+            'returnMessageArray': returnMessageArray.join(', '),
+            // values er kun til test, her. den skal udkommenteres når alt virker.
+            // 'values': req.body
+         });
+
       }
 
    });
