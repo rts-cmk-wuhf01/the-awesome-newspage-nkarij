@@ -1,18 +1,73 @@
 const mysql = require('../config/mysql');
 
 // async functions: man kan lave alle de lokale variabler til async functions.
+// husk at du skal kalde funktionen nede i routes.
 // get categories
 async function getCategories() {
-   let db = await mysql.connect();
-   let [categories] = await db.execute(`
+   let database = await mysql.connect();
+   let [categories] = await database.execute(`
       SELECT *
       FROM newscategories
       ORDER BY newsCategoryTitle ASC`);
-   db.end();
+   database.end();
    return categories;
 }
 
-// get 
+async function getLatestPostsWidget() {
+   let database = await mysql.connect();
+   let [latestpostswidget] = await database.execute(`
+      SELECT
+      *
+      FROM newscategories
+      INNER JOIN news ON fk_newscategoryID = newsCategoryID
+      INNER JOIN author ON fk_authorID = authorID
+      WHERE newsID = (SELECT newsID FROM news 
+                     WHERE fk_newscategoryID = newsCategoryID
+                     ORDER BY newsPostDate DESC
+                     LIMIT 1)
+      ORDER BY newsPostDate DESC`
+   );
+   database.end();
+   return latestpostswidget;
+}
+
+async function getMostPopularNews() {
+   let database = await mysql.connect();
+   let [popularnews] = await database.execute(`
+      SELECT
+      *
+      FROM news
+      INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
+      INNER JOIN author ON fk_authorID = authorID
+      ORDER BY newsLikes DESC
+      LIMIT 4`
+   );
+
+   database.end();
+   return popularnews;
+}
+
+async function getEditorsPicks() {
+   let database = await mysql.connect();
+   let [editorspicks] = await database.execute(`
+      SELECT
+      *
+      FROM newscategories
+      INNER JOIN news ON fk_newscategoryID = newsCategoryID
+      WHERE newsID = ( SELECT newsID FROM news WHERE fk_newscategoryID = newsCategoryID ORDER BY newsPostDate DESC LIMIT 1)` 
+      // NOTE til subselect I SQL-noterne på desktop-skrivebordet
+      );
+   database.end();
+   return editorspicks;
+}
+
+// async function getCategories() {
+//    let database = await mysql.connect();
+//    // skriv dit SQL kald her.
+//    database.end();
+//    return categories;
+// }
+
 
 module.exports = (app) => {
 
@@ -46,39 +101,11 @@ module.exports = (app) => {
       );
       
       // udskriver den nyeste artikel fra hver kategori.
-      let [editorspicks] = await database.execute(`
-         SELECT
-         *
-         FROM newscategories
-         INNER JOIN news ON fk_newscategoryID = newsCategoryID
-         WHERE newsID = ( SELECT newsID FROM news WHERE fk_newscategoryID = newsCategoryID ORDER BY newsPostDate DESC LIMIT 1)` 
-         // NOTE til subselect I SQL-noterne på desktop-skrivebordet
-      );
+      let editorspicks = await getEditorsPicks();
 
       // WIDGETS
-      let [latestpostswidget] = await database.execute(`
-         SELECT
-         *
-         FROM newscategories
-         INNER JOIN news ON fk_newscategoryID = newsCategoryID
-         INNER JOIN author ON fk_authorID = authorID
-         WHERE newsID = (SELECT newsID FROM news 
-                        WHERE fk_newscategoryID = newsCategoryID
-                        ORDER BY newsPostDate DESC
-                        LIMIT 1)
-         ORDER BY newsPostDate DESC`
-      );
-
-      let [popularnews] = await database.execute(`
-         SELECT
-         *
-         FROM news
-         INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
-         INNER JOIN author ON fk_authorID = authorID
-         ORDER BY newsLikes DESC
-         LIMIT 4`
-      );
-
+      let latestpostswidget = await getLatestPostsWidget()
+      let popularnews = await getMostPopularNews();
 
       database.end();
 
@@ -166,12 +193,20 @@ module.exports = (app) => {
       let [categories] = await database.execute(`
          SELECT * FROM newscategories
       `);
+
+      // WIDGETS
+      let popularnews = await getMostPopularNews();
+      let latestpostswidget = await getLatestPostsWidget();
+
       database.end();
 
       res.render('about', {
          "title" : "The News Paper - News & Lifestyle Magazine Template",
          "page" : "About",
          "categories" : categories,
+         // widgets:
+         "latestposts" : latestpostswidget,
+         "mostpopular" : popularnews,
       });
    });
 
@@ -199,16 +234,6 @@ module.exports = (app) => {
          WHERE fk_newsCategoryID = ?`, [req.params.categoryID]
       );
 
-      let [popularnews] = await database.execute(`
-         SELECT
-         *
-         FROM news
-         INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
-         INNER JOIN author ON fk_authorID = authorID
-         ORDER BY newsLikes DESC
-         LIMIT 4`
-      );
-
       // NB BEMÆRK BACKTICKS FOR LINJESKIFT, sådan får man fat i de relaterede tabeller:
       let [selectednews] = await database.execute(`
          SELECT * FROM news
@@ -221,19 +246,8 @@ module.exports = (app) => {
       
       
       // WIDGETS
-      let [latestpostswidget] = await database.execute(`
-         SELECT
-         *
-         FROM newscategories
-         INNER JOIN news ON fk_newscategoryID = newsCategoryID
-         INNER JOIN author ON fk_authorID = authorID
-         WHERE newsID = (SELECT newsID FROM news 
-                        WHERE fk_newscategoryID = newsCategoryID
-                        ORDER BY newsPostDate DESC
-                        LIMIT 1)
-         ORDER BY newsPostDate DESC`
-      );
-
+      let latestpostswidget = await getLatestPostsWidget()
+      let popularnews = await getMostPopularNews();
 
       database.end();
 
@@ -262,29 +276,9 @@ module.exports = (app) => {
          WHERE fk_authorID = ?
       `, [req.params.authorID]);
 
-         // WIDGETS
-         let [latestpostswidget] = await database.execute(`
-         SELECT
-         *
-         FROM newscategories
-         INNER JOIN news ON fk_newscategoryID = newsCategoryID
-         INNER JOIN author ON fk_authorID = authorID
-         WHERE newsID = (SELECT newsID FROM news 
-                        WHERE fk_newscategoryID = newsCategoryID
-                        ORDER BY newsPostDate DESC
-                        LIMIT 1)
-         ORDER BY newsPostDate DESC`
-      );
-
-      let [popularnews] = await database.execute(`
-         SELECT
-         *
-         FROM news
-         INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
-         INNER JOIN author ON fk_authorID = authorID
-         ORDER BY newsLikes DESC
-         LIMIT 4`
-      );
+      // WIDGETS
+      let popularnews = await getMostPopularNews();
+      let latestpostswidget = await getLatestPostsWidget();
 
       database.end();
 
@@ -292,6 +286,9 @@ module.exports = (app) => {
          "title" : "The News Paper - News & Lifestyle Magazine Template",
          "page" : "author-posts",
          "selectedauthor" : selectedauthor,
+         // widgets:
+         "latestposts" : latestpostswidget,
+         "mostpopular" : popularnews,
       });
    });
 
@@ -315,44 +312,11 @@ module.exports = (app) => {
          WHERE fk_newsID = ? 
       `, [req.params.singleID])
 
-      console.log(comments)
-
-      // udskriver den nyeste artikel fra hver kategori.
-      let [editorspicks] = await database.execute(`
-         SELECT
-         *
-         FROM newscategories
-         INNER JOIN news ON fk_newscategoryID = newsCategoryID
-         WHERE newsID = ( SELECT newsID FROM news WHERE fk_newscategoryID = newsCategoryID ORDER BY newsPostDate DESC LIMIT 1)` 
-         // NOTE til subselect I SQL-noterne på desktop-skrivebordet
-      );
-
+      let editorspicks = await getEditorsPicks();
       
       // widgets:
-      let [popularnews] = await database.execute(`
-         SELECT
-         *
-         FROM news
-         INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
-         INNER JOIN author ON fk_authorID = authorID
-         ORDER BY newsLikes DESC
-         LIMIT 4`
-      );
-
-      // WIDGETS
-      let [latestpostswidget] = await database.execute(`
-         SELECT
-         *
-         FROM newscategories
-         INNER JOIN news ON fk_newscategoryID = newsCategoryID
-         INNER JOIN author ON fk_authorID = authorID
-         WHERE newsID = (SELECT newsID FROM news 
-                        WHERE fk_newscategoryID = newsCategoryID
-                        ORDER BY newsPostDate DESC
-                        LIMIT 1)
-         ORDER BY newsPostDate DESC`
-      );
-
+      let popularnews = await getMostPopularNews();
+      let latestpostswidget = await getLatestPostsWidget();
 
       database.end();
 
