@@ -1,5 +1,19 @@
 const mysql = require('../config/mysql');
 
+// async functions: man kan lave alle de lokale variabler til async functions.
+// get categories
+async function getCategories() {
+   let db = await mysql.connect();
+   let [categories] = await db.execute(`
+      SELECT *
+      FROM newscategories
+      ORDER BY newsCategoryTitle ASC`);
+   db.end();
+   return categories;
+}
+
+// get 
+
 module.exports = (app) => {
 
    app.get('/', async (req, res, next) => {
@@ -99,6 +113,51 @@ module.exports = (app) => {
       });
    });
 
+   // husk at post-routen også skal være async
+   app.post('/contact', async (req, res, next) => {
+      // res.send(req.body);
+
+      let name = req.body.contactformname;
+      let email = req.body.contactformemail;
+      let subject = req.body.contactformsubject;
+      let message = req.body.contactformmessage;
+      let contactDate = new Date();
+
+      // håndter valideringen, alle fejl pushes til et array så de er samlet ET sted
+      let returnMessageArray = [];
+      if(name == undefined || name == '') {
+         returnMessageArray.push('Navn mangler');
+      }
+      if(email == undefined || email == '') {
+         returnMessageArray.push('Email mangler')
+      }
+      if(subject == undefined || subject == '') {
+         returnMessageArray.push('Emne mangler')
+      }
+      if (message == undefined || message == '') {
+         returnMessageArray.push('Beskedteksten mangler');
+      }
+
+      // dette er et kort eksempel på strukturen, denne udvides selvfølgelig til noget mere brugbart
+      // hvis der er 1 eller flere elementer i `return_message`, så mangler der noget
+      if (returnMessageArray.length > 0) {
+         // der er mindst 1 information der mangler, returner beskeden som en string.
+         let categories = await getCategories(); // async function
+
+         res.render('contact', {
+            'categories': categories,
+            'returnMessageArray': returnMessageArray.join(', '),
+            // læg mærke til vi "bare" sender req.body tilbage:
+            'values': req.body 
+         });
+
+      } else {
+         // send det modtagede data tilbage, så vi kan se det er korrekt
+         res.send(req.body);
+      }
+
+   });
+
    app.get('/about', async (req, res, next) => {
 
       let database = await mysql.connect();
@@ -127,10 +186,7 @@ module.exports = (app) => {
 
       let database = await mysql.connect();
 
-      // NB BEMÆRK BACKTICKS FOR LINJESKIFT, sådan får man fat i de relaterede tabeller:
-      let [categories] = await database.execute(`
-         SELECT * FROM newscategories
-      `);
+      let categories = await getCategories();
 
       let [news] = await database.execute(`
          SELECT *, 

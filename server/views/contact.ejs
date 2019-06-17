@@ -59,20 +59,42 @@
 
             <div class="row">
                 <div class="col-12 col-lg-8">
+                    <% if (typeof returnMessageArray != 'undefined') { %>
+                        <h4> <%= returnMessageArray %> </h4>
+                    <% } %>
                     <div class="contact-form-area">
-                        <form action="#" method="post">
+                        <form id="contactform" name="contactform" method="post">
                             <div class="row">
                                 <div class="col-12 col-lg-6">
-                                    <input type="text" class="form-control" id="name" placeholder="Name">
+                                    <input type="text"
+                                     class="form-control" 
+                                     id="contactform__name" 
+                                     name="contactformname" 
+                                     placeholder="Name"
+                                     value="<%= typeof values != 'undefined' ? values.contactformname : '' %>"
+                                     >
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <input type="email" class="form-control" id="email" placeholder="E-mail">
+                                    <input type="email" 
+                                    id="contactform__email" 
+                                    name="contactformemail" 
+                                    class="form-control"  
+                                    placeholder="E-mail"
+                                    value="<%= typeof values != 'undefined' ? values.contactformemail : '' %>"
+                                    >
                                 </div>
                                 <div class="col-12">
-                                    <input type="text" class="form-control" id="subject" placeholder="Subject">
+                                    <input type="text" 
+                                    id="contactform__subject" 
+                                    name="contactformsubject" 
+                                    class="form-control"  
+                                    placeholder="Subject"
+                                    value="<%= typeof values != 'undefined' ? values.contactformsubject : '' %>"
+                                    >
                                 </div>
                                 <div class="col-12">
-                                    <textarea name="message" class="form-control" id="message" cols="30" rows="10" placeholder="Message"></textarea>
+                                    <textarea id="contactform__message" name="contactformmessage" class="form-control" cols="30" rows="10" placeholder="Message"><%= typeof values != 'undefined' ? values.contactformmessage : ''
+                                    %></textarea>
                                 </div>
                                 <div class="col-12 text-center">
                                     <button class="btn newspaper-btn mt-30 w-100" type="submit">Send Message</button>
@@ -80,6 +102,7 @@
                             </div>
                         </form>
                     </div>
+                    
                 </div>
 
                 <div class="col-12 col-lg-4">
