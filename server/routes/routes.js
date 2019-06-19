@@ -1,8 +1,9 @@
 const mysql = require('../config/mysql');
 
-// async functions: man kan lave alle de lokale variabler til async functions.
+// async functions: man kan lave alle de lokale [variabler] til async functions.
+// bruges til de tabeller man kalder flere gange..
 // husk at du skal kalde funktionen nede i routes.
-// get categories
+
 async function getCategories() {
    let database = await mysql.connect();
    let [categories] = await database.execute(`
@@ -61,6 +62,24 @@ async function getEditorsPicks() {
    return editorspicks;
 }
 
+async function getCommentWidget() {
+
+   let database = await mysql.connect();
+   
+   let [commentswidget] = await database.execute(`
+      SELECT * FROM comments
+      INNER JOIN users ON fk_userID = userID
+      INNER JOIN news ON fk_newsID = newsID
+      ORDER BY commentPostDate DESC
+      LIMIT 4
+   `);
+
+   database.end();
+   return commentswidget;
+}
+
+// eksempel på en async function
+
 // async function getCategories() {
 //    let database = await mysql.connect();
 //    // skriv dit SQL kald her.
@@ -75,11 +94,11 @@ module.exports = (app) => {
 
       let database = await mysql.connect();
 
-      // NB BEMÆRK BACKTICKS FOR LINJESKIFT, sådan får man fat i de relaterede tabeller:
       let [categories] = await database.execute(`
          SELECT * FROM newscategories
       `);
 
+      // NB BEMÆRK BACKTICKS FOR LINJESKIFT, sådan får man fat i de relaterede tabeller:
       let [frontpagestory] = await database.execute(`
          SELECT * FROM news
          INNER JOIN newscategories ON fk_newscategoryID = newsCategoryID
@@ -88,7 +107,6 @@ module.exports = (app) => {
          ORDER BY newsPostDate DESC` 
          , [1]
       );
-   
 
       let [featurednews] = await database.execute(`
          SELECT * FROM news
@@ -144,6 +162,7 @@ module.exports = (app) => {
    app.post('/contact', async (req, res, next) => {
       // res.send(req.body);
 
+      // FORM VALIDERING SERVERSIDE STARTER
       let name = req.body.contactformname;
       let email = req.body.contactformemail;
       let subject = req.body.contactformsubject;
@@ -166,7 +185,6 @@ module.exports = (app) => {
          returnMessageArray.push('Beskedteksten mangler');
       }
 
-      // dette er et kort eksempel på strukturen, denne udvides selvfølgelig til noget mere brugbart
       // hvis der er 1 eller flere elementer i `return_message`, så mangler der noget
       if (returnMessageArray.length > 0) {
          // der er mindst 1 information der mangler, returner beskeden som en string.
@@ -175,7 +193,7 @@ module.exports = (app) => {
          res.render('contact', {
             'categories': categories,
             'returnMessageArray': returnMessageArray.join(', '),
-            // læg mærke til vi "bare" sender req.body tilbage:
+            // læg mærke til vi "bare" sender req.body tilbage til formularen
             'values': req.body 
          });
 
@@ -216,6 +234,8 @@ module.exports = (app) => {
             // 'values': req.body
          });
 
+         // FORM VALIDERING SERVERSIDE SLUTTER
+
       }
 
    });
@@ -245,13 +265,14 @@ module.exports = (app) => {
       });
    });
 
-   // her tilføjes et endpoint til siden vha /:
+   // her tilføjes et ekstra endpoint til siden vha /:
    // fx: /categories-post/3. Her er 3 = parameter værdien, 
    // som er tilgængelig i route koden via req.params.category_id
    // app.get('/categories-post/:category_id', async (req, res, next) => {
    //    res.send(req.params.category_id); // for demonstrationens skyld! 
-   //    // her kan alle kategoriens artikler hentes osv...
+   //    // her kan alle kategoriens artikler hentes via parameter værdien (ID)...
    // });
+   
    app.get('/categories-post/:categoryID', async (req, res, next) => {
 
       let database = await mysql.connect();
@@ -281,8 +302,9 @@ module.exports = (app) => {
       
       
       // WIDGETS
-      let latestpostswidget = await getLatestPostsWidget()
+      let latestPostWidget = await getLatestPostsWidget()
       let popularnews = await getMostPopularNews();
+      let latestCommentsWidget = await getCommentWidget();
 
       database.end();
 
@@ -294,8 +316,9 @@ module.exports = (app) => {
          // nb newspicks er begrænset til 4 i templaten.
          "popularnewspick" : popularnews,
          // widgets:
-         "latestposts" : latestpostswidget,
+         "latestposts" : latestPostWidget,
          "mostpopular" : popularnews,
+         "latestcommentswidget" : latestCommentsWidget,
          "news" : news,
       });
    });
@@ -314,6 +337,7 @@ module.exports = (app) => {
       // WIDGETS
       let popularnews = await getMostPopularNews();
       let latestpostswidget = await getLatestPostsWidget();
+      let latestCommentsWidget = await getCommentWidget();
 
       database.end();
 
@@ -323,6 +347,7 @@ module.exports = (app) => {
          "selectedauthor" : selectedauthor,
          // widgets:
          "latestposts" : latestpostswidget,
+         "latestcommentswidget" : latestCommentsWidget,
          "mostpopular" : popularnews,
       });
    });
@@ -352,6 +377,7 @@ module.exports = (app) => {
       // widgets:
       let popularnews = await getMostPopularNews();
       let latestpostswidget = await getLatestPostsWidget();
+      let latestCommentsWidget = await getCommentWidget();
 
       database.end();
 
@@ -364,6 +390,7 @@ module.exports = (app) => {
          // widgets:
          "latestposts" : latestpostswidget,
          "mostpopular" : popularnews,
+         "latestcommentswidget" : latestCommentsWidget,
          "comments" : comments
       });
    });
