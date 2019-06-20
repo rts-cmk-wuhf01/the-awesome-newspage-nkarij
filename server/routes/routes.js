@@ -90,6 +90,26 @@ async function getCommentWidget() {
 
 module.exports = (app) => {
 
+   app.get('/fisk/:antal/:type', async (req, res, next) => { 
+      // res.send("Her er en fisk");
+
+      // URL eksempel: /fisk/3/torsk
+      
+      // let antal = req.params.antal;
+
+      let fisk = {
+         "antal" : req.params.antal,
+         "type" : req.params.type,
+      }
+
+      res.render('fisk', {
+         "fisk" : fisk
+      });
+
+      
+   });
+
+
    app.get('/', async (req, res, next) => {
 
       let database = await mysql.connect();
