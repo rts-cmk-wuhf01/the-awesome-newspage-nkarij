@@ -94,14 +94,16 @@ module.exports = (app) => {
       // res.send("Her er en fisk");
 
       // URL eksempel: /fisk/3/torsk
-      
+
       // let antal = req.params.antal;
 
+      // en mini-database, hvor fisk er tabellen og antal/type er rækker
       let fisk = {
          "antal" : req.params.antal,
          "type" : req.params.type,
       }
 
+      // render sender til ejs.
       res.render('fisk', {
          "fisk" : fisk
       });
